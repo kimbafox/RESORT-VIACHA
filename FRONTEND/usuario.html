@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil de Usuario - Paradise Resort</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="overlay">
+        <nav class="navbar">
+            <img src="assets/logo.png" alt="Logo Resort" class="logo">
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="guia_turistica.html">Guía Turística</a></li>
+                <li><a href="calendario.html">Calendario</a></li>
+                <li><a href="precios.html">Precios</a></li>
+                <li><a href="usuario.html">Mi Perfil </a></li>
+            </ul>
+        </nav>
+
+        <div class="glass-container">
+            <h2>Panel de Usuario </h2>
+            <div id="userInfo" style="margin-top: 1.5rem;">
+                <p><strong>Correo Electrónico:</strong> <span id="displayEmail">No registrado</span></p>
+                <p style="margin-top: 0.8rem;"><strong>Contraseña:</strong> <span id="displayPassword">No registrada</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (user) {
+                document.getElementById('displayEmail').textContent = user.email;
+                document.getElementById('displayPassword').textContent = user.password;
+            } else {
+                document.getElementById('userInfo').innerHTML = "<p>No hay un usuario autenticado en la sesión actual.</p>";
+            }
+        });
+    </script>
+</body>
+</html>

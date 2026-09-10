@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendario - Paradise Resort</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="overlay">
+        <nav class="navbar">
+            <img src="assets/logo.png" alt="Logo Resort" class="logo">
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="guia_turistica.html">Guía Turística</a></li>
+                <li><a href="calendario.html">Calendario</a></li>
+                <li><a href="precios.html">Precios</a></li>
+                <li><a href="usuario.html">Mi Perfil </a></li>
+            </ul>
+        </nav>
+        <main class="calendar-wrapper">
+            <section class="calendar-card glass-container">
+                <div class="calendar-header">
+                    <button class="nav-btn" id="prevMonth" aria-label="Mes anterior">&#10094;</button>
+                    <div class="month-year-wrap">
+                        <span id="monthName" class="month-name">Mes</span>
+                        <span id="yearName" class="year-name">2026</span>
+                    </div>
+                    <button class="nav-btn" id="nextMonth" aria-label="Mes siguiente">&#10095;</button>
+                </div>
+
+                <div class="weekdays" aria-label="Días de la semana">
+                    <span>Dom</span>
+                    <span>Lun</span>
+                    <span>Mar</span>
+                    <span>Mié</span>
+                    <span>Jue</span>
+                    <span>Vie</span>
+                    <span>Sáb</span>
+                </div>
+
+                <div id="calendarDays" class="calendar-days" aria-live="polite"></div>
+
+                <div class="booking-info">
+                    <h3>Disponibilidad de Reservas</h3>
+                    <p>Selecciona la fecha de tu estadía:</p>
+                    <input id="bookingDate" type="date" class="date-input">
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

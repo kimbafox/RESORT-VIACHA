@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Paradise Resort - Inicio</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="loader-screen" id="loaderScreen" aria-live="polite" aria-label="Cargando sitio">
+        <div class="loader-content">
+            <img src="assets/logo.png" alt="Logo Resort" class="loader-logo">
+            <div class="loader-ring" aria-hidden="true"></div>
+            <p>Cargando case...</p>
+        </div>
+    </div>
+
+    <div class="overlay">
+        <nav class="navbar">
+            <img src="assets/logo.png" alt="Logo Resort" class="logo">
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="guia_turistica.html">Guía </a></li>
+                <li><a href="calendario.html">Calendario</a></li>
+                <li><a href="precios.html">Precios</a></li>
+                <li><a href="usuario.html">Mi Perfil </a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <div class="glass-container">
+                <div class="auth-tabs">
+                    <button class="tab-btn active" onclick="switchTab('login')">Ingresar</button>
+                    <button class="tab-btn" onclick="switchTab('register')">Registrarse</button>
+                </div>
+
+                <!-- Formulario de Login -->
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <input type="email" id="loginEmail" placeholder="Correo electrónico" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="loginPassword" placeholder="Contraseña" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Entrar</button>
+                </form>
+
+                <!-- Formulario de Registro -->
+                <form id="registerForm" onsubmit="handleRegister(event)" style="display: none;">
+                    <div class="form-group">
+                        <input type="email" id="regEmail" placeholder="Correo electrónico" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="regPassword" placeholder="Contraseña" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Crear Cuenta</button>
+                </form>
+            </div>
+
+            <!-- Galería Demostrativa -->
+            <div class="grid-gallery">
+                <div class="card"><img src="assets/demo1.jpg" alt="Instalaciones"><div class="card-content"><h3>Bienvenidos</h3></div></div>
+                <div class="card"><img src="assets/piscina.jpg" alt="Piscina"><div class="card-content"><h3>Piscina Infinity</h3></div></div>
+                <div class="card"><img src="assets/bar.jpg" alt="Bar"><div class="card-content"><h3>Bar Exclusivo</h3></div></div>
+            </div>
+        </main>
+    </div>
+    <script src="js/main.js"></script>
+</body>
+</html>

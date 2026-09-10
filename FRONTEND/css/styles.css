@@ -1,0 +1,493 @@
+:root {
+    --primary-color: #0077b6;
+    --accent-color: #00b4d8;
+    --bg-overlay: rgba(0, 0, 0, 0.55);
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.25);
+    --text-color: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: url('../assets/fondo.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: var(--text-color);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.loader-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    z-index: 9999;
+    transition: opacity 0.7s ease, visibility 0.7s ease;
+}
+
+.loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1rem;
+}
+
+.loader-logo {
+    width: min(300px, 60vw);
+    opacity: 0;
+    transform: translateY(18px);
+    animation: loaderLogoIn 0.9s ease forwards 0.2s;
+}
+
+.loader-ring {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 5px solid rgba(0, 119, 182, 0.15);
+    border-top-color: var(--primary-color);
+    animation: spin 1s linear infinite;
+    box-shadow: 0 0 18px rgba(0, 119, 182, 0.18);
+}
+
+.loader-content p {
+    font-size: 1.2rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+    font-weight: 700;
+    opacity: 0.9;
+}
+
+body.loaded .loader-screen {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.overlay {
+    background: var(--bg-overlay);
+    min-height: 100vh;
+    padding-bottom: 2rem;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+}
+
+.logo {
+    height: 50px;
+    filter: brightness(0) invert(1);
+    transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+    filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(255,255,255,0.7));
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+    padding: 0.35rem 0.5rem;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.nav-links a::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -35%;
+    width: 18%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), transparent);
+    transform: skewX(-20deg) translateX(-150%);
+    opacity: 0;
+}
+
+.nav-links a:hover,
+.nav-links a:focus-visible {
+    color: var(--accent-color);
+    transform: translateY(-1px);
+}
+
+.nav-links a:hover::after,
+.nav-links a:active::after,
+.nav-links a:focus-visible::after {
+    animation: buttonGlow 0.8s ease-out;
+}
+
+.calendar-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 90px);
+    padding: 2rem 1rem;
+}
+
+/* Estilo Glassmorphism para Tarjetas y Formularios */
+.glass-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 0;
+    padding: 2.2rem;
+    max-width: 760px;
+    width: min(90vw, 760px);
+    margin: 3rem auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+.calendar-card {
+    padding: 2rem 2.2rem 1.5rem;
+}
+
+.calendar-header {
+    display: grid;
+    grid-template-columns: 60px 1fr 60px;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+}
+
+.month-year-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+}
+
+.month-name {
+    font-size: clamp(2rem, 3vw, 3rem);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.1;
+}
+
+.year-name {
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+    font-weight: 700;
+    opacity: 0.9;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.nav-btn {
+    width: 52px;
+    height: 52px;
+    border: none;
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 1.6rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-btn:hover {
+    background: rgba(0, 180, 216, 0.3);
+    transform: translateY(-1px);
+}
+
+.weekdays,
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+.weekdays {
+    margin-bottom: 0.8rem;
+    color: rgba(255,255,255,0.92);
+    font-weight: 700;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.weekdays span {
+    padding: 0.8rem 0.4rem;
+    border-radius: 0;
+    background: rgba(255,255,255,0.04);
+}
+
+.calendar-days {
+    min-height: 360px;
+}
+
+.day-cell {
+    min-height: 72px;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.04);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.2s ease;
+}
+
+.day-cell:hover {
+    background: rgba(0, 180, 216, 0.12);
+    transform: translateY(-2px);
+}
+
+.day-cell.muted {
+    opacity: 0.35;
+}
+
+.day-cell.today {
+    border: 2px solid rgba(0, 180, 216, 0.8);
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.15);
+}
+
+.day-cell.selected {
+    background: linear-gradient(135deg, #00b4d8, #0077b6);
+    color: white;
+    box-shadow: 0 10px 20px rgba(0, 119, 182, 0.35);
+}
+
+.booking-info {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255,255,255,0.12);
+}
+
+.booking-info h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.booking-info p {
+    margin-bottom: 0.8rem;
+    opacity: 0.9;
+}
+
+.date-input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border-radius: 0;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+@media (max-width: 640px) {
+    .calendar-card {
+        padding: 1.25rem 1rem 1rem;
+    }
+
+    .calendar-header {
+        grid-template-columns: 44px 1fr 44px;
+    }
+
+    .nav-btn {
+        width: 42px;
+        height: 42px;
+        font-size: 1.2rem;
+    }
+
+    .weekdays span {
+        font-size: 0.72rem;
+    }
+
+    .day-cell {
+        min-height: 60px;
+        font-size: 1rem;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes buttonGlow {
+    0% {
+        opacity: 0;
+        transform: skewX(-20deg) translateX(-180%);
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: skewX(-20deg) translateX(220%);
+    }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes loaderLogoIn {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.auth-tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1.5rem;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0.55rem 0.9rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.tab-btn::after,
+.btn-submit::after,
+.nav-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.8) 50%, transparent 80%);
+    transform: translateX(-120%);
+    opacity: 0;
+}
+
+.tab-btn:hover,
+.tab-btn:active,
+.tab-btn:focus-visible,
+.btn-submit:hover,
+.btn-submit:active,
+.btn-submit:focus-visible,
+.nav-btn:hover,
+.nav-btn:active,
+.nav-btn:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 0 12px rgba(255,255,255,0.35);
+}
+
+.tab-btn:hover::after,
+.tab-btn:active::after,
+.tab-btn:focus-visible::after,
+.btn-submit:hover::after,
+.btn-submit:active::after,
+.btn-submit:focus-visible::after,
+.nav-btn:hover::after,
+.nav-btn:active::after,
+.nav-btn:focus-visible::after {
+    animation: buttonGlow 0.9s ease-out;
+}
+
+.tab-btn.active {
+    border-bottom: 2px solid var(--accent-color);
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 0;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    outline: none;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 0;
+    background: var(--primary-color);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-submit:hover {
+    background: var(--accent-color);
+}
+
+/* Galería / Rejilla de Contenido */
+.grid-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem 4rem;
+}
+
+.card {
+    background: rgba(0,0,0,0.6);
+    border-radius: 0;
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 0;
+}
+
+.card-content {
+    padding: 1rem;
+}
