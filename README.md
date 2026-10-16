@@ -9,10 +9,11 @@ El backend es un servidor hecho con **Node.js** y **Express**. Su trabajo es man
 
 Archivos principales:
 
-- **`server.js`**: es el archivo principal. Enciende el servidor, prepara Express para leer JSON/formularios, sirve archivos estáticos y conecta las rutas de autenticación (`/api/register`, `/api/login`, `/api/profile`).
+- **`server.js`**: es el archivo principal. Enciende el servidor, prepara Express para leer JSON/formularios, sirve el frontend y conecta las rutas de autenticación (`/api/register`, `/api/login`, `/api/profile`). También publica Swagger en `http://localhost:3000/api-docs`.
+- **`database.js`**: inicializa automáticamente una base SQLite en `BACKEND/data/resort.sqlite` y crea la tabla `users` si todavía no existe.
 - **`routes/authRoutes.js`**: tiene la lógica de registrarse e iniciar sesión.
   - Valida que el email y la contraseña sean correctos usando `express-validator`.
-  - Guarda la contraseña **encriptada** (nunca en texto plano) usando `bcryptjs`.
+  - Guarda la contraseña **encriptada** (nunca en texto plano) usando `bcryptjs` y conserva el usuario en SQLite.
   - Cuando el login es correcto, genera un **token** con `jsonwebtoken` (como una "llave" que identifica al usuario).
 - **`middleware/authMiddleware.js`**: revisa que el token enviado por el usuario sea válido antes de dejarlo entrar a rutas protegidas (como `/api/profile`).
 
@@ -35,7 +36,7 @@ Es la página de inicio del sitio. Tiene tres partes:
 El archivo `js/main.js` es el que da vida a `index.html`:
 
 - `switchTab()`: cambia entre el formulario de login y el de registro.
-- `handleLogin()` y `handleRegister()`: por ahora solo muestran un mensaje de alerta (`alert()`). **Todavía no están conectados al backend**; para que funcionen de verdad, hay que hacer que envíen los datos con `fetch()` a `/api/login` y `/api/register`.
+- El acceso usa un componente de React cargado por CDN, conectado mediante `fetch()` con `/api/login` y `/api/register`. Incluye un modal de bienvenida beta y asigna el logo del Resort como foto de perfil predeterminada al crear la cuenta.
 
 ## Cómo probar el backend
 

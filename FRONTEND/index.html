@@ -27,34 +27,7 @@
         </nav>
 
         <main>
-            <div class="glass-container">
-                <div class="auth-tabs">
-                    <button class="tab-btn active" onclick="switchTab('login')">Ingresar</button>
-                    <button class="tab-btn" onclick="switchTab('register')">Registrarse</button>
-                </div>
-
-                <!-- Formulario de Login -->
-                <form id="loginForm" onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <input type="email" id="loginEmail" placeholder="Correo electrónico" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="loginPassword" placeholder="Contraseña" required>
-                    </div>
-                    <button type="submit" class="btn-submit">Entrar</button>
-                </form>
-
-                <!-- Formulario de Registro -->
-                <form id="registerForm" onsubmit="handleRegister(event)" style="display: none;">
-                    <div class="form-group">
-                        <input type="email" id="regEmail" placeholder="Correo electrónico" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="regPassword" placeholder="Contraseña" required>
-                    </div>
-                    <button type="submit" class="btn-submit">Crear Cuenta</button>
-                </form>
-            </div>
+            <div id="authRoot"></div>
 
             <!-- Galería Demostrativa -->
             <div class="grid-gallery">
@@ -64,6 +37,10 @@
             </div>
         </main>
     </div>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel" src="js/auth-app.jsx"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

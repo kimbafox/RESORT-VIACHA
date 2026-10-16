@@ -462,6 +462,64 @@ body.loaded .loader-screen {
     background: var(--accent-color);
 }
 
+.auth-card {
+    position: relative;
+}
+
+.beta-badge {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+}
+
+.beta-copy,
+.auth-message {
+    margin: 0 0 1rem;
+}
+
+.auth-message {
+    color: var(--accent-color);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+}
+
+.modal-backdrop {
+    position: fixed;
+    z-index: 10;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: rgb(0 0 0 / 70%);
+}
+
+.beta-modal {
+    width: min(100%, 430px);
+    padding: 2rem;
+    text-align: center;
+    background: #152238;
+    border: 1px solid var(--accent-color);
+    box-shadow: 0 1rem 3rem rgb(0 0 0 / 50%);
+}
+
+.profile-placeholder {
+    display: block;
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 1rem;
+    padding: 0.5rem;
+    object-fit: contain;
+    background: white;
+    border-radius: 50%;
+}
+
 /* Galería / Rejilla de Contenido */
 .grid-gallery {
     display: grid;

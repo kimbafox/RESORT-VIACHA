@@ -3,11 +3,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const { authMiddleware, JWT_SECRET } = require('../middleware/authMiddleware');
+const database = require('../database');
 
 const router = express.Router();
 
-// Base de datos temporal en memoria (Para la versión Beta)
-const users = [];
+const DEFAULT_PROFILE_IMAGE = '/assets/logo.png';
 
 const registerValidators = [
     body('email').isEmail().withMessage('Debe proporcionar un correo electrónico válido.').normalizeEmail(),
@@ -31,44 +31,61 @@ function handleValidation(req, res, next) {
 router.post('/register', registerValidators, handleValidation, async (req, res) => {
     const { email, password } = req.body;
 
-    const existingUser = users.find(u => u.email === email);
+    const existingUser = await database.get('SELECT id FROM users WHERE email = ?', [email]);
     if (existingUser) {
         return res.status(400).json({ success: false, message: 'El usuario ya está registrado.' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = { id: users.length + 1, email, password: hashedPassword };
-    users.push(newUser);
+    const result = await database.run(
+        'INSERT INTO users (email, password_hash, profile_image) VALUES (?, ?, ?)',
+        [email, hashedPassword, DEFAULT_PROFILE_IMAGE]
+    );
+    const newUser = { id: result.id, email, profileImage: DEFAULT_PROFILE_IMAGE };
 
     const token = jwt.sign({ id: newUser.id, email: newUser.email }, JWT_SECRET, { expiresIn: '2h' });
-    return res.json({ success: true, message: 'Registro exitoso.', token, user: { id: newUser.id, email: newUser.email } });
+    return res.status(201).json({ success: true, message: 'Registro exitoso.', token, user: newUser });
 });
 
 // API Endpoint: Login de usuarios
 router.post('/login', loginValidators, handleValidation, async (req, res) => {
     const { email, password } = req.body;
-    const user = users.find(u => u.email === email);
+    const user = await database.get(
+        'SELECT id, email, password_hash, profile_image FROM users WHERE email = ?',
+        [email]
+    );
 
     if (!user) {
         return res.status(401).json({ success: false, message: 'Credenciales incorrectas.' });
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(password, user.password_hash);
     if (!passwordMatch) {
         return res.status(401).json({ success: false, message: 'Credenciales incorrectas.' });
     }
 
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '2h' });
-    return res.json({ success: true, message: 'Inicio de sesión exitoso.', token, user: { id: user.id, email: user.email } });
+    return res.json({
+        success: true,
+        message: 'Inicio de sesión exitoso.',
+        token,
+        user: { id: user.id, email: user.email, profileImage: user.profile_image }
+    });
 });
 
 // API Endpoint: Perfil protegido (requiere token JWT válido)
-router.get('/profile', authMiddleware, (req, res) => {
-    const user = users.find(u => u.id === req.user.id);
+router.get('/profile', authMiddleware, async (req, res) => {
+    const user = await database.get(
+        'SELECT id, email, profile_image FROM users WHERE id = ?',
+        [req.user.id]
+    );
     if (!user) {
         return res.status(404).json({ success: false, message: 'Usuario no encontrado.' });
     }
-    return res.json({ success: true, user: { id: user.id, email: user.email } });
+    return res.json({
+        success: true,
+        user: { id: user.id, email: user.email, profileImage: user.profile_image }
+    });
 });
 
 module.exports = router;

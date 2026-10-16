@@ -4,32 +4,6 @@ window.addEventListener('load', () => {
     }, 1600);
 });
 
-function switchTab(tab) {
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const tabs = document.querySelectorAll('.tab-btn');
-
-    if (!loginForm || !registerForm || !tabs.length) return;
-
-    const isLogin = tab === 'login';
-    loginForm.style.display = isLogin ? 'block' : 'none';
-    registerForm.style.display = isLogin ? 'none' : 'block';
-
-    tabs.forEach((button) => {
-        button.classList.toggle('active', button.getAttribute('onclick')?.includes(tab));
-    });
-}
-
-function handleLogin(event) {
-    event.preventDefault();
-    alert('Inicio de sesión exitoso');
-}
-
-function handleRegister(event) {
-    event.preventDefault();
-    alert('Cuenta creada correctamente');
-}
-
 const monthName = document.getElementById('monthName');
 const yearName = document.getElementById('yearName');
 const calendarDays = document.getElementById('calendarDays');
