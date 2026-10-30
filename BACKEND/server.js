@@ -7,13 +7,12 @@ const { initializeDatabase } = require('./database');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware para procesar JSON y datos de formularios
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, '..', 'FRONTEND')));
 
-// Rutas de autenticación (registro, login, perfil)
+app.get('/health', (req, res) => res.json({ ok: true }));
 app.use('/api', authRoutes);
 
 const swaggerSpec = swaggerJsdoc({
@@ -83,9 +82,20 @@ const swaggerSpec = swaggerJsdoc({
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
 
+app.use('/api', (req, res) => res.status(404).json({ success: false, message: 'Ruta no encontrada.' }));
+
+// Manejo de errores (los handlers async de Express 4 los envían aquí)
+app.use((error, req, res, next) => {
+    if (error.status === 400) {
+        return res.status(400).json({ success: false, message: 'Solicitud inválida.' });
+    }
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Error interno del servidor.' });
+});
+
 initializeDatabase()
     .then(() => {
-        app.listen(PORT, () => {
+        app.listen(PORT, '0.0.0.0', () => {
             console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
             console.log(`Documentación Swagger disponible en http://localhost:${PORT}/api-docs`);
         });

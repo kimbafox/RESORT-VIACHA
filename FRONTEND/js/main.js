@@ -4,6 +4,57 @@ window.addEventListener('load', () => {
     }, 1600);
 });
 
+// Botones de sesión en la barra de navegación (logo a la izquierda, acceso a la derecha)
+(function renderNavAuth() {
+    const navbar = document.querySelector('.navbar');
+    if (!navbar) return;
+
+    let user = null;
+    try {
+        user = localStorage.getItem('authToken') ? JSON.parse(localStorage.getItem('currentUser')) : null;
+    } catch (error) {
+        user = null;
+    }
+
+    const box = document.createElement('div');
+    box.className = 'nav-auth';
+
+    if (user) {
+        const profile = document.createElement('a');
+        profile.href = 'usuario.html';
+        profile.className = 'nav-user';
+        const avatar = document.createElement('img');
+        avatar.src = user.profileImage || 'assets/logo.png';
+        avatar.alt = 'Perfil';
+        const name = document.createElement('span');
+        name.textContent = user.email;
+        profile.append(avatar, name);
+
+        const logout = document.createElement('button');
+        logout.type = 'button';
+        logout.className = 'nav-btn';
+        logout.textContent = 'Salir';
+        logout.addEventListener('click', () => {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        });
+        box.append(profile, logout);
+    } else {
+        const login = document.createElement('a');
+        login.href = 'index.html#login';
+        login.className = 'nav-btn';
+        login.textContent = 'Iniciar sesión';
+        const register = document.createElement('a');
+        register.href = 'index.html#register';
+        register.className = 'nav-btn nav-btn-primary';
+        register.textContent = 'Registrarse';
+        box.append(login, register);
+    }
+
+    navbar.appendChild(box);
+})();
+
 const monthName = document.getElementById('monthName');
 const yearName = document.getElementById('yearName');
 const calendarDays = document.getElementById('calendarDays');

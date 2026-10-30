@@ -7,6 +7,8 @@ const database = require('../database');
 
 const router = express.Router();
 
+const asyncHandler = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+
 const DEFAULT_PROFILE_IMAGE = '/assets/logo.png';
 
 const registerValidators = [
@@ -28,7 +30,7 @@ function handleValidation(req, res, next) {
 }
 
 // API Endpoint: Registro de usuarios
-router.post('/register', registerValidators, handleValidation, async (req, res) => {
+router.post('/register', registerValidators, handleValidation, asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
     const existingUser = await database.get('SELECT id FROM users WHERE email = ?', [email]);
@@ -45,10 +47,10 @@ router.post('/register', registerValidators, handleValidation, async (req, res) 
 
     const token = jwt.sign({ id: newUser.id, email: newUser.email }, JWT_SECRET, { expiresIn: '2h' });
     return res.status(201).json({ success: true, message: 'Registro exitoso.', token, user: newUser });
-});
+    }));
 
 // API Endpoint: Login de usuarios
-router.post('/login', loginValidators, handleValidation, async (req, res) => {
+router.post('/login', loginValidators, handleValidation, asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const user = await database.get(
         'SELECT id, email, password_hash, profile_image FROM users WHERE email = ?',
@@ -71,10 +73,10 @@ router.post('/login', loginValidators, handleValidation, async (req, res) => {
         token,
         user: { id: user.id, email: user.email, profileImage: user.profile_image }
     });
-});
+        }));
 
 // API Endpoint: Perfil protegido (requiere token JWT válido)
-router.get('/profile', authMiddleware, async (req, res) => {
+        router.get('/profile', authMiddleware, asyncHandler(async (req, res) => {
     const user = await database.get(
         'SELECT id, email, profile_image FROM users WHERE id = ?',
         [req.user.id]
@@ -86,6 +88,6 @@ router.get('/profile', authMiddleware, async (req, res) => {
         success: true,
         user: { id: user.id, email: user.email, profileImage: user.profile_image }
     });
-});
+        }));
 
 module.exports = router;

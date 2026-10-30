@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Sitio web para Resort viviacha",
   "main": "server.js",
+  "engines": {
+    "node": ">=20.17.0"
+  },
   "scripts": {
     "start": "node server.js"
   },

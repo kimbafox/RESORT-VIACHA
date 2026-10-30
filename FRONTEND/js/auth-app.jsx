@@ -1,16 +1,25 @@
 const { useState } = React;
 
 function AuthApp() {
-    const [mode, setMode] = useState('login');
+    const [mode, setMode] = useState(window.location.hash === '#register' ? 'register' : 'login');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState('');
-    const [showBetaModal, setShowBetaModal] = useState(true);
+    const [showBetaModal, setShowBetaModal] = useState(
+        !localStorage.getItem('authToken') && !sessionStorage.getItem('betaSeen')
+    );
+
+    React.useEffect(() => {
+        const onHash = () => setMode(window.location.hash === '#register' ? 'register' : 'login');
+        window.addEventListener('hashchange', onHash);
+        return () => window.removeEventListener('hashchange', onHash);
+    }, []);
 
     const isRegistering = mode === 'register';
 
     async function submit(event) {
         event.preventDefault();
-        const form = new FormData(event.currentTarget);
+        const formElement = event.currentTarget;
+        const form = new FormData(formElement);
         const email = form.get('email');
         const password = form.get('password');
 
@@ -33,8 +42,9 @@ function AuthApp() {
 
             localStorage.setItem('authToken', data.token);
             localStorage.setItem('currentUser', JSON.stringify(data.user));
-            setMessage(data.message);
-            event.currentTarget.reset();
+            setMessage(`${data.message} Redirigiendo a tu perfil...`);
+            formElement.reset();
+            setTimeout(() => { window.location.href = 'usuario.html'; }, 900);
         } catch (error) {
             setMessage('No se pudo conectar con el servidor. Intenta nuevamente.');
         } finally {
@@ -45,6 +55,7 @@ function AuthApp() {
     function changeMode(nextMode) {
         setMode(nextMode);
         setMessage('');
+        window.history.replaceState(null, '', `#${nextMode}`);
     }
 
     return (
@@ -79,7 +90,7 @@ function AuthApp() {
                         <span className="beta-badge">BETA</span>
                         <h2 id="betaTitle">Bienvenido a Paradise Resort</h2>
                         <p>Al crear tu cuenta se asignará automáticamente el logo del Resort como tu foto de perfil.</p>
-                        <button className="btn-submit" type="button" onClick={() => setShowBetaModal(false)}>Continuar</button>
+                        <button className="btn-submit" type="button" onClick={() => { sessionStorage.setItem('betaSeen', '1'); setShowBetaModal(false); }}>Continuar</button>
                     </section>
                 </div>
             )}

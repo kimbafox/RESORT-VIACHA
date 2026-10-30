@@ -2,10 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 
-const dataDirectory = path.join(__dirname, 'data');
-fs.mkdirSync(dataDirectory, { recursive: true });
+// DB_PATH permite apuntar a un volumen persistente (p. ej. en Railway)
+const databaseFile = process.env.DB_PATH || path.join(__dirname, 'data', 'resort.sqlite');
+fs.mkdirSync(path.dirname(databaseFile), { recursive: true });
 
-const database = new sqlite3.Database(path.join(dataDirectory, 'resort.sqlite'));
+const database = new sqlite3.Database(databaseFile);
 
 function run(sql, params = []) {
     return new Promise((resolve, reject) => {
