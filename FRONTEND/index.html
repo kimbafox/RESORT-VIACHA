@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Paradise Resort - Inicio</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -10,37 +11,120 @@
         <div class="loader-content">
             <img src="assets/logo.png" alt="Logo Resort" class="loader-logo">
             <div class="loader-ring" aria-hidden="true"></div>
-            <p>Cargando case...</p>
+            <p>Cargando...</p>
         </div>
     </div>
 
     <div class="overlay">
         <nav class="navbar">
-            <img src="assets/logo.png" alt="Logo Resort" class="logo">
+            <a href="index.html"><img src="assets/logo.png" alt="Logo Resort" class="logo"></a>
             <ul class="nav-links">
                 <li><a href="index.html">Inicio</a></li>
-                <li><a href="guia_turistica.html">Guía </a></li>
+                <li><a href="guia_turistica.html">Guía Turística</a></li>
                 <li><a href="calendario.html">Calendario</a></li>
-                <li><a href="precios.html">Precios</a></li>
-                <li><a href="usuario.html">Mi Perfil </a></li>
+                <li><a href="precios.html">Precios y Reservas</a></li>
+                <li><a href="usuario.html">Mi Perfil</a></li>
             </ul>
         </nav>
 
-        <main>
-            <div id="authRoot"></div>
+        <header class="hero">
+            <span class="hero-tag">Viacha · La Paz · Bolivia</span>
+            <h1>Descansa, disfruta y desconecta en <span>Paradise Resort</span></h1>
+            <p>Un refugio cerca del altiplano con habitaciones cómodas, piscina, bar y excursiones a los lugares más especiales de la región.</p>
+            <div class="hero-actions">
+                <a href="precios.html" class="btn-hero">Reservar ahora</a>
+                <a href="#servicios" class="btn-hero btn-hero-ghost">Ver servicios</a>
+            </div>
+        </header>
 
-            <!-- Galería Demostrativa -->
+        <section class="section" id="nosotros">
+            <h2 class="section-title">¿Quiénes somos?</h2>
+            <div class="about">
+                <img src="assets/demo1.jpg" alt="Instalaciones del resort">
+                <div>
+                    <p>Somos un resort familiar de Viacha pensado para quienes buscan tranquilidad sin alejarse de la ciudad. Combinamos hospitalidad boliviana, instalaciones cuidadas y atención cercana para que cada visita se sienta como en casa.</p>
+                    <p>Esta página es tu punto de partida: aquí conoces el lugar, planificas tus fechas, reservas tu habitación y administras tu perfil y tus reservas en un solo sitio.</p>
+                    <ul class="about-stats">
+                        <li><strong>3</strong><span>tipos de suite</span></li>
+                        <li><strong>24/7</strong><span>atención al huésped</span></li>
+                        <li><strong>+5</strong><span>excursiones guiadas</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="servicios">
+            <h2 class="section-title">Nuestros servicios</h2>
+            <div class="services">
+                <article class="service">
+                    <div class="service-icon">🛏️</div>
+                    <h3>Alojamiento</h3>
+                    <p>Suites Estándar, Deluxe y Presidencial con baño privado y descanso garantizado.</p>
+                </article>
+                <article class="service">
+                    <div class="service-icon">🏊</div>
+                    <h3>Piscina Infinity</h3>
+                    <p>Un espacio para relajarte y compartir en familia o con amigos.</p>
+                </article>
+                <article class="service">
+                    <div class="service-icon">🍸</div>
+                    <h3>Bar y coctelería</h3>
+                    <p>Bebidas y noches temáticas en nuestro bar exclusivo.</p>
+                </article>
+                <article class="service">
+                    <div class="service-icon">🗺️</div>
+                    <h3>Excursiones</h3>
+                    <p>Visitas guiadas a Tiwanaku, Charquini y otros atractivos cercanos.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="section" id="ayuda">
+            <h2 class="section-title">¿En qué te ayudamos?</h2>
+            <div class="steps">
+                <article class="step">
+                    <span class="step-number">1</span>
+                    <h3>Explora</h3>
+                    <p>Conoce las habitaciones, los precios y la guía turística de la zona.</p>
+                </article>
+                <article class="step">
+                    <span class="step-number">2</span>
+                    <h3>Elige tus fechas</h3>
+                    <p>Consulta la disponibilidad en el calendario y selecciona tu estadía.</p>
+                </article>
+                <article class="step">
+                    <span class="step-number">3</span>
+                    <h3>Reserva</h3>
+                    <p>Confirma tu reserva en minutos y recibe tu código de confirmación.</p>
+                </article>
+                <article class="step">
+                    <span class="step-number">4</span>
+                    <h3>Gestiona tu perfil</h3>
+                    <p>Personaliza tu foto y descripción y revisa o cancela tus reservas.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Conoce el resort</h2>
             <div class="grid-gallery">
-                <div class="card"><img src="assets/demo1.jpg" alt="Instalaciones"><div class="card-content"><h3>Bienvenidos</h3></div></div>
                 <div class="card"><img src="assets/piscina.jpg" alt="Piscina"><div class="card-content"><h3>Piscina Infinity</h3></div></div>
                 <div class="card"><img src="assets/bar.jpg" alt="Bar"><div class="card-content"><h3>Bar Exclusivo</h3></div></div>
+                <div class="card"><img src="assets/cuarto2.jpg" alt="Suite"><div class="card-content"><h3>Suites cómodas</h3></div></div>
             </div>
-        </main>
+        </section>
+
+        <section class="cta-band">
+            <h2>¿Listo para tu estadía?</h2>
+            <p>Crea tu cuenta gratis para reservar y guardar tus reservas.</p>
+            <div class="hero-actions">
+                <a href="login.html#register" class="btn-hero">Crear cuenta</a>
+                <a href="precios.html" class="btn-hero btn-hero-ghost">Ver precios</a>
+            </div>
+        </section>
+
+        <footer class="site-footer">© 2026 Paradise Resort · Viacha, Bolivia</footer>
     </div>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script type="text/babel" src="js/auth-app.jsx"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

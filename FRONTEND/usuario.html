@@ -2,53 +2,64 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Perfil de Usuario - Paradise Resort</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mi Perfil - Paradise Resort</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="overlay">
         <nav class="navbar">
-            <img src="assets/logo.png" alt="Logo Resort" class="logo">
+            <a href="index.html"><img src="assets/logo.png" alt="Logo Resort" class="logo"></a>
             <ul class="nav-links">
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="guia_turistica.html">Guía Turística</a></li>
                 <li><a href="calendario.html">Calendario</a></li>
-                <li><a href="precios.html">Precios</a></li>
-                <li><a href="usuario.html">Mi Perfil </a></li>
+                <li><a href="precios.html">Precios y Reservas</a></li>
+                <li><a href="usuario.html">Mi Perfil</a></li>
             </ul>
         </nav>
 
-        <div class="glass-container">
-            <h2>Panel de Usuario </h2>
-            <span class="beta-badge">BETA</span>
-            <div id="userInfo" style="margin-top: 1.5rem;">
-                <img id="profileImage" class="profile-placeholder" src="assets/logo.png" alt="Foto de perfil predeterminada">
-                <p><strong>Correo Electrónico:</strong> <span id="displayEmail">No registrado</span></p>
-            </div>
-        </div>
-    </div>
+        <main class="profile-page">
+            <section class="glass-container profile-card">
+                <img id="profileImage" class="avatar-lg" src="assets/logo.png" alt="Foto de perfil">
+                <div class="profile-info">
+                    <h2 id="displayName">Cargando...</h2>
+                    <p class="profile-email" id="displayEmail"></p>
+                    <p class="profile-since" id="displaySince"></p>
+                    <p class="profile-desc" id="displayDesc"></p>
+                </div>
+            </section>
 
+            <section class="glass-container profile-edit">
+                <h2>Editar perfil</h2>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="editName">Nombre</label>
+                        <input id="editName" type="text" maxlength="60" placeholder="¿Cómo quieres que te llamemos?">
+                    </div>
+                    <div class="form-group">
+                        <label for="editDesc">Descripción <small id="descCount">0/300</small></label>
+                        <textarea id="editDesc" maxlength="300" rows="4" placeholder="Cuéntanos algo sobre ti"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Foto de perfil</label>
+                        <div class="avatar-options" id="avatarOptions"></div>
+                        <label class="upload-btn" for="avatarFile">📷 Subir mi foto</label>
+                        <input id="avatarFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+                    </div>
+                    <p class="auth-message" id="profileMessage" role="status"></p>
+                    <button class="btn-submit" type="submit" id="saveProfile">Guardar cambios</button>
+                </form>
+            </section>
+
+            <section class="glass-container profile-reservations">
+                <h2>Mis reservas</h2>
+                <div id="reservationList"><p class="muted-text">Cargando...</p></div>
+                <a class="btn-submit res-link" href="precios.html">Hacer una nueva reserva</a>
+            </section>
+        </main>
+    </div>
     <script src="js/main.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                window.location.href = 'index.html#login';
-                return;
-            }
-            try {
-                const response = await fetch('/api/profile', { headers: { Authorization: `Bearer ${token}` } });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.message);
-                localStorage.setItem('currentUser', JSON.stringify(data.user));
-                document.getElementById('displayEmail').textContent = data.user.email;
-                document.getElementById('profileImage').src = data.user.profileImage || 'assets/logo.png';
-            } catch (error) {
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('currentUser');
-                window.location.href = 'index.html#login';
-            }
-        });
-    </script>
+    <script src="js/perfil.js"></script>
 </body>
 </html>

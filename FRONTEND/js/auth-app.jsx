@@ -42,9 +42,11 @@ function AuthApp() {
 
             localStorage.setItem('authToken', data.token);
             localStorage.setItem('currentUser', JSON.stringify(data.user));
-            setMessage(`${data.message} Redirigiendo a tu perfil...`);
+            const next = new URLSearchParams(window.location.search).get('next');
+            const destination = next && /^[a-z_]+\.html(#\w+)?$/i.test(next) ? next : 'usuario.html';
+            setMessage(`${data.message} Redirigiendo...`);
             formElement.reset();
-            setTimeout(() => { window.location.href = 'usuario.html'; }, 900);
+            setTimeout(() => { window.location.href = destination; }, 900);
         } catch (error) {
             setMessage('No se pudo conectar con el servidor. Intenta nuevamente.');
         } finally {

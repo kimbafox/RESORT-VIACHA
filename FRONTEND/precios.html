@@ -2,45 +2,117 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Precios - Paradise Resort</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Precios y Reservas - Paradise Resort</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="overlay">
         <nav class="navbar">
-            <img src="assets/logo.png" alt="Logo Resort" class="logo">
+            <a href="index.html"><img src="assets/logo.png" alt="Logo Resort" class="logo"></a>
             <ul class="nav-links">
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="guia_turistica.html">Guía Turística</a></li>
                 <li><a href="calendario.html">Calendario</a></li>
-                <li><a href="precios.html">Precios</a></li>
-                <li><a href="usuario.html">Mi Perfil </a></li>
+                <li><a href="precios.html">Precios y Reservas</a></li>
+                <li><a href="usuario.html">Mi Perfil</a></li>
             </ul>
         </nav>
-        <div class="grid-gallery">
-            <div class="card">
-                <img src="assets/cuarto1.jpg" alt="Habitación Estándar">
-                <div class="card-content">
-                    <h3>Suite Estándar</h3>
-                    <p>BS120 / noche</p>
+
+        <section class="section">
+            <h1 class="section-title">Habitaciones y precios</h1>
+            <p class="section-lead">Elige tu suite, selecciona tus fechas en el calendario y confirma tu reserva.</p>
+            <div class="grid-gallery room-grid">
+                <div class="card room-card">
+                    <img src="assets/cuarto1.jpg" alt="Suite Estándar">
+                    <div class="card-content">
+                        <h3>Suite Estándar</h3>
+                        <p class="room-desc">Cama matrimonial, baño privado y TV. Ideal para parejas.</p>
+                        <p class="room-price">Bs 120 <small>/ noche</small></p>
+                        <button class="btn-submit" type="button" data-room="estandar">Reservar</button>
+                    </div>
+                </div>
+                <div class="card room-card">
+                    <img src="assets/cuarto2.jpg" alt="Suite Deluxe">
+                    <div class="card-content">
+                        <h3>Suite Deluxe</h3>
+                        <p class="room-desc">Más espacio, vista al jardín y desayuno incluido.</p>
+                        <p class="room-price">Bs 250 <small>/ noche</small></p>
+                        <button class="btn-submit" type="button" data-room="deluxe">Reservar</button>
+                    </div>
+                </div>
+                <div class="card room-card">
+                    <img src="assets/cuarto3.jpg" alt="Suite Presidencial">
+                    <div class="card-content">
+                        <h3>Suite Presidencial</h3>
+                        <p class="room-desc">Sala privada, jacuzzi y atención personalizada.</p>
+                        <p class="room-price">Bs 450 <small>/ noche</small></p>
+                        <button class="btn-submit" type="button" data-room="presidencial">Reservar</button>
+                    </div>
                 </div>
             </div>
-            <div class="card">
-                <img src="assets/cuarto2.jpg" alt="Habitación VIP">
-                <div class="card-content">
-                    <h3>Suite Deluxe</h3>
-                    <p>BS250 / noche</p>
-                </div>
-            </div>
-            <div class="card">
-                <img src="assets/cuarto3.jpg" alt="Habitación Presidencial">
-                <div class="card-content">
-                    <h3>Suite Presidencial</h3>
-                    <p>BS450 / noche</p>
-                </div>
-            </div>
-        </div>
+        </section>
     </div>
+
+    <div class="modal-backdrop" id="resModal" hidden>
+        <section class="res-modal" role="dialog" aria-modal="true" aria-labelledby="resTitle">
+            <button class="res-close" id="resClose" type="button" aria-label="Cerrar">&times;</button>
+
+            <div id="resForm">
+                <h2 id="resTitle">Reservar</h2>
+                <p class="res-hint" id="resHint">Selecciona tu fecha de entrada y luego la de salida.</p>
+
+                <div class="calendar-header">
+                    <button class="nav-btn" id="resPrev" type="button" aria-label="Mes anterior">&#10094;</button>
+                    <div class="month-year-wrap">
+                        <span id="resMonth" class="month-name">Mes</span>
+                        <span id="resYear" class="year-name">2026</span>
+                    </div>
+                    <button class="nav-btn" id="resNext" type="button" aria-label="Mes siguiente">&#10095;</button>
+                </div>
+                <div class="weekdays"><span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span></div>
+                <div class="calendar-days" id="resDays"></div>
+
+                <div class="res-fields">
+                    <div class="form-group">
+                        <label for="resGuests">Huéspedes</label>
+                        <select id="resGuests">
+                            <option>1</option><option selected>2</option><option>3</option>
+                            <option>4</option><option>5</option><option>6</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="resPayment">Método de pago (simulado)</label>
+                        <select id="resPayment">
+                            <option value="tarjeta">Tarjeta</option>
+                            <option value="qr">QR / Transferencia</option>
+                            <option value="efectivo">Efectivo al llegar</option>
+                        </select>
+                    </div>
+                </div>
+
+                <dl class="res-summary">
+                    <div><dt>Entrada</dt><dd id="resIn">—</dd></div>
+                    <div><dt>Salida</dt><dd id="resOut">—</dd></div>
+                    <div><dt>Noches</dt><dd id="resNights">—</dd></div>
+                    <div class="res-total"><dt>Total</dt><dd id="resTotal">Bs 0</dd></div>
+                </dl>
+
+                <p class="auth-message" id="resMessage" role="status"></p>
+                <button class="btn-submit" id="resConfirm" type="button" disabled>Confirmar reserva</button>
+            </div>
+
+            <div id="resDone" hidden>
+                <div class="res-ok">✔</div>
+                <h2>¡Reserva confirmada!</h2>
+                <p>Tu código es <strong id="resCode"></strong></p>
+                <p id="resDoneInfo"></p>
+                <a class="btn-submit res-link" href="usuario.html">Ver mis reservas</a>
+            </div>
+        </section>
+    </div>
+
     <script src="js/main.js"></script>
+    <script src="js/reservas.js"></script>
 </body>
 </html>

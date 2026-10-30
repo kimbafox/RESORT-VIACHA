@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Acceso - Paradise Resort</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="overlay">
+        <nav class="navbar">
+            <a href="index.html"><img src="assets/logo.png" alt="Logo Resort" class="logo"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="guia_turistica.html">Guía Turística</a></li>
+                <li><a href="calendario.html">Calendario</a></li>
+                <li><a href="precios.html">Precios y Reservas</a></li>
+                <li><a href="usuario.html">Mi Perfil</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <div id="authRoot"></div>
+        </main>
+    </div>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel" src="js/auth-app.jsx"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

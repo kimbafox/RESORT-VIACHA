@@ -4,17 +4,44 @@ window.addEventListener('load', () => {
     }, 1600);
 });
 
+// Sesión compartida entre páginas
+window.resortAuth = {
+    token: () => localStorage.getItem('authToken'),
+    user() {
+        try {
+            return this.token() ? JSON.parse(localStorage.getItem('currentUser')) : null;
+        } catch (error) {
+            return null;
+        }
+    },
+    save(user) {
+        localStorage.setItem('currentUser', JSON.stringify(user));
+    },
+    clear() {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('currentUser');
+    },
+    async api(path, options = {}) {
+        const headers = { 'Content-Type': 'application/json' };
+        if (this.token()) headers.Authorization = `Bearer ${this.token()}`;
+        const response = await fetch(`/api${path}`, { ...options, headers });
+        const data = await response.json().catch(() => ({}));
+        if (response.status === 401 || response.status === 403) this.clear();
+        if (!response.ok) {
+            const error = new Error(data.errors?.[0]?.msg || data.message || 'No fue posible completar la solicitud.');
+            error.status = response.status;
+            throw error;
+        }
+        return data;
+    }
+};
+
 // Botones de sesión en la barra de navegación (logo a la izquierda, acceso a la derecha)
 (function renderNavAuth() {
     const navbar = document.querySelector('.navbar');
     if (!navbar) return;
 
-    let user = null;
-    try {
-        user = localStorage.getItem('authToken') ? JSON.parse(localStorage.getItem('currentUser')) : null;
-    } catch (error) {
-        user = null;
-    }
+    const user = window.resortAuth.user();
 
     const box = document.createElement('div');
     box.className = 'nav-auth';
@@ -27,27 +54,26 @@ window.addEventListener('load', () => {
         avatar.src = user.profileImage || 'assets/logo.png';
         avatar.alt = 'Perfil';
         const name = document.createElement('span');
-        name.textContent = user.email;
+        name.textContent = user.name || user.email;
         profile.append(avatar, name);
 
         const logout = document.createElement('button');
         logout.type = 'button';
-        logout.className = 'nav-btn';
+        logout.className = 'nav-cta';
         logout.textContent = 'Salir';
         logout.addEventListener('click', () => {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('currentUser');
+            window.resortAuth.clear();
             window.location.href = 'index.html';
         });
         box.append(profile, logout);
     } else {
         const login = document.createElement('a');
-        login.href = 'index.html#login';
-        login.className = 'nav-btn';
+        login.href = 'login.html#login';
+        login.className = 'nav-cta';
         login.textContent = 'Iniciar sesión';
         const register = document.createElement('a');
-        register.href = 'index.html#register';
-        register.className = 'nav-btn nav-btn-primary';
+        register.href = 'login.html#register';
+        register.className = 'nav-cta nav-cta-primary';
         register.textContent = 'Registrarse';
         box.append(login, register);
     }

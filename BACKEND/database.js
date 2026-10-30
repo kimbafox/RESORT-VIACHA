@@ -34,6 +34,19 @@ function get(sql, params = []) {
     });
 }
 
+function all(sql, params = []) {
+    return new Promise((resolve, reject) => {
+        database.all(sql, params, (error, rows) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+
+            resolve(rows);
+        });
+    });
+}
+
 async function initializeDatabase() {
     await run(`
         CREATE TABLE IF NOT EXISTS users (
@@ -44,6 +57,30 @@ async function initializeDatabase() {
             created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
     `);
+
+    const columns = (await all('PRAGMA table_info(users)')).map((column) => column.name);
+    if (!columns.includes('name')) {
+        await run("ALTER TABLE users ADD COLUMN name TEXT NOT NULL DEFAULT ''");
+    }
+    if (!columns.includes('description')) {
+        await run("ALTER TABLE users ADD COLUMN description TEXT NOT NULL DEFAULT ''");
+    }
+
+    await run(`
+        CREATE TABLE IF NOT EXISTS reservations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL REFERENCES users(id),
+            room TEXT NOT NULL,
+            check_in TEXT NOT NULL,
+            check_out TEXT NOT NULL,
+            guests INTEGER NOT NULL,
+            nights INTEGER NOT NULL,
+            total INTEGER NOT NULL,
+            payment_method TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'confirmada',
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
 }
 
-module.exports = { get, initializeDatabase, run };
+module.exports = { all, get, initializeDatabase, run };

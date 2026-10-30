@@ -3,17 +3,19 @@ const path = require('path');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const authRoutes = require('./routes/authRoutes');
+const reservationRoutes = require('./routes/reservationRoutes');
 const { initializeDatabase } = require('./database');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, '..', 'FRONTEND')));
 
 app.get('/health', (req, res) => res.json({ ok: true }));
 app.use('/api', authRoutes);
+app.use('/api', reservationRoutes);
 
 const swaggerSpec = swaggerJsdoc({
     definition: {
@@ -86,8 +88,8 @@ app.use('/api', (req, res) => res.status(404).json({ success: false, message: 'R
 
 // Manejo de errores (los handlers async de Express 4 los envían aquí)
 app.use((error, req, res, next) => {
-    if (error.status === 400) {
-        return res.status(400).json({ success: false, message: 'Solicitud inválida.' });
+    if (error.status && error.status < 500) {
+        return res.status(error.status).json({ success: false, message: 'Solicitud inválida.' });
     }
     console.error(error);
     res.status(500).json({ success: false, message: 'Error interno del servidor.' });
