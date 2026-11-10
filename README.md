@@ -47,3 +47,41 @@ npm start
 ```
 
 El servidor queda escuchando en `http://localhost:3000`.
+
+## Ejecución con Docker
+
+Requisitos: Docker Desktop (o Docker Engine + Compose).
+
+```bash
+# 1) Crear el archivo de configuración y generar el secreto de los tokens
+cp .env.example .env
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"   # pega el resultado en JWT_SECRET=
+
+# 2) Construir y levantar
+docker compose up -d --build
+
+# 3) Verificar
+docker compose ps          # debe aparecer "healthy"
+docker compose logs -f web
+```
+
+El sitio queda en `http://localhost:3000` y Swagger en `http://localhost:3000/api-docs`.
+Para detenerlo: `docker compose down` (la base de datos se conserva). Para borrar también los datos: `docker compose down -v`.
+
+### Seguridad de la base de datos
+
+- La base SQLite vive en el volumen `resort_data` (`/data`), fuera del código y de la imagen; con permisos `700` (carpeta) y `600` (archivos).
+- El contenedor corre sin root, con sistema de archivos de solo lectura, sin capacidades extra de Linux y con límites de memoria y procesos.
+- `PRAGMA foreign_keys`, restricciones `CHECK` e índices en `reservations`; `secure_delete` y modo WAL activados.
+- La verificación de disponibilidad y el `INSERT` de una reserva son atómicos (evita sobre-reservas con peticiones simultáneas).
+- Con `NODE_ENV=production` la app no arranca si `JWT_SECRET` falta o tiene menos de 32 caracteres.
+- El archivo `.env` y los `*.sqlite` están en `.gitignore` y `.dockerignore`: no se suben a Git ni entran en la imagen.
+
+### Respaldo de la base de datos
+
+```bash
+docker compose exec web node -e "const s=require('sqlite3');const d=new s.Database('/data/resort.sqlite');d.run(\"VACUUM INTO '/data/backup.sqlite'\",e=>{console.log(e||'respaldo ok');d.close()})"
+docker cp resort-viacha:/data/backup.sqlite ./backup.sqlite
+docker compose exec web rm /data/backup.sqlite
+```
+

@@ -1,0 +1,15 @@
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+node_modules
+BACKEND/node_modules
+BACKEND/data
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+Dockerfile
+docker-compose.yml
+README.md
+npm-debug.log

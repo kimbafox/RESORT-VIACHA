@@ -103,20 +103,25 @@ router.post('/reservations', authMiddleware, asyncHandler(async (req, res) => {
         return res.status(400).json({ success: false, message: 'Elige un método de pago válido.' });
     }
 
-    const counts = await occupancyByDay(roomKey);
-    for (let time = start; time < end; time += DAY) {
-        if ((counts[formatDay(time)] || 0) >= room.stock) {
-            return res.status(409).json({ success: false, message: 'Esas fechas ya no están disponibles. Elige otras.' });
-        }
-    }
-
+    // Verificar disponibilidad e insertar debe ser atómico: si no, dos peticiones
+    // simultáneas pueden reservar la misma última unidad (sobre-reserva).
     const total = nights * room.price;
-    const result = await database.run(
-        `INSERT INTO reservations (user_id, room, check_in, check_out, guests, nights, total, payment_method)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [req.user.id, roomKey, checkIn, checkOut, guests, nights, total, paymentMethod]
-    );
-    const row = await database.get('SELECT * FROM reservations WHERE id = ?', [result.id]);
+    const row = await database.exclusive(async () => {
+        const counts = await occupancyByDay(roomKey);
+        for (let time = start; time < end; time += DAY) {
+            if ((counts[formatDay(time)] || 0) >= room.stock) return null;
+        }
+        const result = await database.run(
+            `INSERT INTO reservations (user_id, room, check_in, check_out, guests, nights, total, payment_method)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [req.user.id, roomKey, checkIn, checkOut, guests, nights, total, paymentMethod]
+        );
+        return database.get('SELECT * FROM reservations WHERE id = ?', [result.id]);
+    });
+
+    if (!row) {
+        return res.status(409).json({ success: false, message: 'Esas fechas ya no están disponibles. Elige otras.' });
+    }
     return res.status(201).json({ success: true, message: 'Reserva confirmada.', reservation: formatReservation(row) });
 }));
 

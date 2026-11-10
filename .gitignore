@@ -1,0 +1,7 @@
+node_modules/
+.env
+# La base de datos contiene datos de usuarios: no debe subirse al repositorio
+BACKEND/data/*.sqlite
+BACKEND/data/*.sqlite-wal
+BACKEND/data/*.sqlite-shm
+*.log

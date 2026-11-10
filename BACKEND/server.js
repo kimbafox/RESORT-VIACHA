@@ -4,7 +4,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const authRoutes = require('./routes/authRoutes');
 const reservationRoutes = require('./routes/reservationRoutes');
-const { initializeDatabase } = require('./database');
+const { close: closeDatabase, initializeDatabase } = require('./database');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -97,10 +97,22 @@ app.use((error, req, res, next) => {
 
 initializeDatabase()
     .then(() => {
-        app.listen(PORT, '0.0.0.0', () => {
+        const server = app.listen(PORT, '0.0.0.0', () => {
             console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
             console.log(`Documentación Swagger disponible en http://localhost:${PORT}/api-docs`);
         });
+
+        // `docker stop` envía SIGTERM: se deja de aceptar peticiones y se cierra la BD limpiamente
+        const shutdown = (signal) => {
+            console.log(`${signal} recibido, cerrando...`);
+            server.close(async () => {
+                await closeDatabase();
+                process.exit(0);
+            });
+            setTimeout(() => process.exit(1), 8000).unref();
+        };
+        process.on('SIGTERM', () => shutdown('SIGTERM'));
+        process.on('SIGINT', () => shutdown('SIGINT'));
     })
     .catch((error) => {
         console.error('No se pudo inicializar la base de datos:', error);

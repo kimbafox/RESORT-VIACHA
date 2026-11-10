@@ -1,0 +1,32 @@
+services:
+  web:
+    build: .
+    image: resort-viacha:latest
+    container_name: resort-viacha
+    init: true                      # PID 1 correcto: reenvía señales y evita procesos zombie
+    restart: unless-stopped
+    ports:
+      # Solo accesible desde tu propia máquina. Para exponerlo en la red usa "${HOST_PORT:-3000}:3000"
+      - "127.0.0.1:${HOST_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      DB_PATH: /data/resort.sqlite
+      # Obligatorio: si falta, docker compose se detiene con este mensaje
+      JWT_SECRET: ${JWT_SECRET:?Define JWT_SECRET en el archivo .env (mínimo 32 caracteres)}
+    volumes:
+      - resort_data:/data           # la base de datos persiste aquí, fuera del contenedor
+
+    # --- Endurecimiento del contenedor ---
+    read_only: true                 # sistema de archivos de solo lectura (solo /data y /tmp se pueden escribir)
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL                         # sin capacidades de Linux extra
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    pids_limit: 200
+
+volumes:
+  resort_data:
