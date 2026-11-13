@@ -4,7 +4,8 @@
   "description": "Sitio web para Resort Viacha",
   "main": "BACKEND/server.js",
   "scripts": {
-    "start": "node BACKEND/server.js"
+    "start": "node BACKEND/server.js",
+    "test": "node --test"
   },
   "engines": {
     "node": ">=20.17.0"

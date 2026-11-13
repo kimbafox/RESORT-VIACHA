@@ -30,13 +30,14 @@ Es la página de inicio del sitio. Tiene tres partes:
 
 1. **Pantalla de carga (`loaderScreen`)**: se muestra un momento mientras carga la página, luego desaparece.
 2. **Navegación (`navbar`)**: enlaces para moverse entre las páginas (Inicio, Guía, Calendario, Precios, Mi Perfil).
-3. **Formularios de Login/Registro**: hay dos pestañas ("Ingresar" y "Registrarse") que se muestran u ocultan con la función `switchTab()` en `js/main.js`.
-4. **Galería de imágenes**: muestra fotos del resort (piscina, bar, instalaciones).
+3. **Galería de imágenes**: muestra fotos del resort (piscina, bar, instalaciones).
 
 El archivo `js/main.js` es el que da vida a `index.html`:
 
-- `switchTab()`: cambia entre el formulario de login y el de registro.
-- El acceso usa un componente de React cargado por CDN, conectado mediante `fetch()` con `/api/login` y `/api/register`. Incluye un modal de bienvenida beta y asigna el logo del Resort como foto de perfil predeterminada al crear la cuenta.
+- La navegación y la sesión se comparten entre las páginas.
+- El acceso está en `login.html`: usa React cargado por CDN y se conecta mediante `fetch()` con `/api/login` y `/api/register`. Incluye un modal de bienvenida beta y asigna el logo del Resort como foto de perfil predeterminada al crear la cuenta.
+- La disponibilidad se consulta al abrir el formulario de reserva en `precios.html`; el calendario independiente ayuda a planificar fechas y no muestra disponibilidad.
+- En la guía turística, Charquini y Tiwanaku muestran una ruta por carretera desde la Plaza del Estudiante de La Paz. El mapa utiliza Leaflet y teselas de OpenStreetMap; la ruta usa el servidor público de demostración de OSRM, por lo que requiere internet y su disponibilidad no está garantizada. La línea termina en la vía accesible más cercana al destino y el tramo restante no está trazado. La ubicación del bar está pendiente de confirmar.
 
 ## Cómo probar el backend
 
@@ -47,6 +48,8 @@ npm start
 ```
 
 El servidor queda escuchando en `http://localhost:3000`.
+
+Para ejecutar las pruebas de la API desde la raíz del proyecto: `npm test`.
 
 ## Ejecución con Docker
 
@@ -67,6 +70,9 @@ docker compose logs -f web
 
 El sitio queda en `http://localhost:3000` y Swagger en `http://localhost:3000/api-docs`.
 Para detenerlo: `docker compose down` (la base de datos se conserva). Para borrar también los datos: `docker compose down -v`.
+
+Las fechas de reserva se validan según la hora de Bolivia (America/La_Paz). Una estadía
+puede durar hasta 30 noches y los métodos de pago mostrados son simulados.
 
 ### Seguridad de la base de datos
 
