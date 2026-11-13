@@ -71,6 +71,13 @@ docker compose logs -f web
 El sitio queda en `http://localhost:3000` y Swagger en `http://localhost:3000/api-docs`.
 Para detenerlo: `docker compose down` (la base de datos se conserva). Para borrar también los datos: `docker compose down -v`.
 
+## Despliegue en Railway
+
+1. Despliega el proyecto desde su carpeta raíz para que Railway detecte el `Dockerfile`.
+2. Conecta un volumen de Railway al servicio y configura `/data` como ruta de montaje. Sin volumen, la base de datos no se conserva entre despliegues.
+3. En las variables del servicio configura `JWT_SECRET` con una clave aleatoria de al menos 32 caracteres y `RAILWAY_RUN_UID=0`. Railway monta los volúmenes como root; esta variable permite escribir en el volumen, pero hace que el servicio se ejecute como root en Railway.
+4. Vuelve a desplegar y verifica los registros del servicio y la ruta `/health`.
+
 Las fechas de reserva se validan según la hora de Bolivia (America/La_Paz). Una estadía
 puede durar hasta 30 noches y los métodos de pago mostrados son simulados.
 
