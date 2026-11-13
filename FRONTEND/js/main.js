@@ -1,8 +1,14 @@
 window.addEventListener('load', () => {
-    setTimeout(() => {
-        document.body.classList.add('loaded');
-    }, 1600);
+    document.body.classList.add('loaded');
 });
+
+window.resortToday = () => {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/La_Paz', year: 'numeric', month: '2-digit', day: '2-digit'
+    }).formatToParts(new Date());
+    const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+    return `${values.year}-${values.month}-${values.day}`;
+};
 
 // Sesión compartida entre páginas
 window.resortAuth = {
@@ -40,6 +46,11 @@ window.resortAuth = {
 (function renderNavAuth() {
     const navbar = document.querySelector('.navbar');
     if (!navbar) return;
+
+    const currentPage = location.pathname.split('/').pop() || 'index.html';
+    navbar.querySelectorAll('.nav-links a').forEach((link) => {
+        if (link.getAttribute('href') === currentPage) link.setAttribute('aria-current', 'page');
+    });
 
     const user = window.resortAuth.user();
 
@@ -116,6 +127,7 @@ if (monthName && yearName && calendarDays && bookingDate && prevMonthBtn && next
             day.type = 'button';
             day.className = 'day-cell muted';
             day.textContent = daysInPrevMonth - i;
+            day.disabled = true;
             calendarDays.appendChild(day);
         }
 
@@ -134,7 +146,7 @@ if (monthName && yearName && calendarDays && bookingDate && prevMonthBtn && next
 
             button.addEventListener('click', () => {
                 selectedDate = new Date(year, month, day);
-                bookingDate.value = selectedDate.toISOString().split('T')[0];
+                bookingDate.value = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 renderCalendar();
             });
 
@@ -147,6 +159,7 @@ if (monthName && yearName && calendarDays && bookingDate && prevMonthBtn && next
             nextDay.type = 'button';
             nextDay.className = 'day-cell muted';
             nextDay.textContent = day;
+            nextDay.disabled = true;
             calendarDays.appendChild(nextDay);
         }
     }
@@ -172,6 +185,6 @@ if (monthName && yearName && calendarDays && bookingDate && prevMonthBtn && next
     });
 
     selectedDate = new Date();
-    bookingDate.value = selectedDate.toISOString().split('T')[0];
+    bookingDate.value = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`;
     renderCalendar();
 }

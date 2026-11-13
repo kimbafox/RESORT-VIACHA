@@ -22,13 +22,16 @@
     };
 
     const now = new Date();
-    const today = fmt(now.getFullYear(), now.getMonth(), now.getDate());
+    let today = window.resortToday();
 
     let roomKey = null;
     let fullDates = new Set();
     let view = new Date(now.getFullYear(), now.getMonth(), 1);
     let start = null;
     let end = null;
+    let availabilityLoaded = false;
+    let requestId = 0;
+    let trigger = null;
 
     function hasFullNight(from, to) {
         for (let t = toTime(from); t < toTime(to); t += DAY) {
@@ -44,10 +47,11 @@
         const nights = start && end ? Math.round((toTime(end) - toTime(start)) / DAY) : 0;
         $('resNights').textContent = nights || '—';
         $('resTotal').textContent = `Bs ${nights * room.price}`;
-        confirmBtn.disabled = !nights;
+        confirmBtn.disabled = !availabilityLoaded || !nights || nights > 30;
         $('resHint').textContent = !start
             ? 'Selecciona tu fecha de entrada.'
-            : !end ? 'Ahora selecciona tu fecha de salida.' : 'Revisa los datos y confirma tu reserva.';
+            : !end ? 'Ahora selecciona tu fecha de salida.'
+                : nights > 30 ? 'La estadía no puede superar 30 noches.' : 'Revisa los datos y confirma tu reserva.';
     }
 
     function selectDay(value) {
@@ -89,7 +93,7 @@
 
             const isFull = fullDates.has(value);
             const canBeCheckout = start && !end && value > start;
-            const disabled = value < today || (isFull && !canBeCheckout);
+            const disabled = !availabilityLoaded || value < today || (isFull && !canBeCheckout);
             if (isFull) button.classList.add('full');
             if (value === today) button.classList.add('today');
             if (value === start || value === end) button.classList.add('selected');
@@ -105,34 +109,47 @@
         updateSummary();
     }
 
-    async function openModal(key) {
+    async function openModal(key, button) {
         if (!window.resortAuth.user()) {
             window.location.href = 'login.html?next=precios.html#login';
             return;
         }
         roomKey = key;
+        trigger = button;
+        const request = ++requestId;
+        today = window.resortToday();
         start = null;
         end = null;
         fullDates = new Set();
-        view = new Date(now.getFullYear(), now.getMonth(), 1);
-        message.textContent = '';
+        availabilityLoaded = false;
+        const [year, month] = today.split('-').map(Number);
+        view = new Date(year, month - 1, 1);
+        message.textContent = 'Consultando disponibilidad...';
         $('resTitle').textContent = `Reservar ${ROOMS[key].name}`;
         $('resForm').hidden = false;
         $('resDone').hidden = true;
         modal.hidden = false;
+        $('resClose').focus();
         render();
 
         try {
             const data = await window.resortAuth.api(`/availability/${key}`);
+            if (request !== requestId) return;
             fullDates = new Set(data.fullDates);
+            availabilityLoaded = true;
+            message.textContent = '';
             render();
         } catch (error) {
+            if (request !== requestId) return;
             message.textContent = 'No se pudo cargar la disponibilidad.';
         }
     }
 
     function closeModal() {
+        if (modal.hidden) return;
+        requestId++;
         modal.hidden = true;
+        if (trigger) trigger.focus();
     }
 
     async function confirm() {
@@ -168,7 +185,11 @@
                     start = null;
                     end = null;
                     render();
-                } catch (ignored) { /* se mantiene el mensaje */ }
+                } catch (availabilityError) {
+                    availabilityLoaded = false;
+                    message.textContent = 'No se pudo actualizar la disponibilidad. Cierra y vuelve a abrir la reserva.';
+                    render();
+                }
             }
         } finally {
             confirmBtn.textContent = 'Confirmar reserva';
@@ -177,7 +198,7 @@
     }
 
     document.querySelectorAll('[data-room]').forEach((button) => {
-        button.addEventListener('click', () => openModal(button.dataset.room));
+        button.addEventListener('click', () => openModal(button.dataset.room, button));
     });
     $('resClose').addEventListener('click', closeModal);
     modal.addEventListener('click', (event) => { if (event.target === modal) closeModal(); });

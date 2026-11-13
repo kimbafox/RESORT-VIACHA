@@ -2,13 +2,15 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Guía Turística -  Resort</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Guía Turística - Paradise Resort</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="overlay">
         <nav class="navbar">
-            <img src="assets/logo.png" alt="Logo Resort" class="logo">
+            <a href="index.html"><img src="assets/logo.png" alt="Logo Resort" class="logo"></a>
             <ul class="nav-links">
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="guia_turistica.html">Guía Turística</a></li>
@@ -17,13 +19,41 @@
                 <li><a href="usuario.html">Mi Perfil </a></li>
             </ul>
         </nav>
-        <h1 style="text-align: center; margin-top: 1rem;">Excursiones y Entretenimiento</h1>
-        <div class="grid-gallery">
-            <div class="card"><img src="assets/viaje1.jpg" alt="Excursión 1"><div class="card-content"><h3>charquini</h3></div></div>
-            <div class="card"><img src="assets/viaje2.jpg" alt="Excursión 2"><div class="card-content"><h3>tiwanaku</h3></div></div>
-            <div class="card"><img src="assets/bar1.jpg" alt="Vida Nocturna"><div class="card-content"><h3>Noche de Coctelería</h3></div></div>
-        </div>
+        <main class="section">
+            <h1 class="section-title">Excursiones y entretenimiento</h1>
+            <p class="section-lead">Elige un destino para ver la ruta desde la Plaza del Estudiante, La Paz.</p>
+            <div class="grid-gallery">
+                <article class="card guide-card">
+                    <button class="guide-choice" type="button" data-destination="charquini" aria-label="Ver ruta a Charquini">
+                        <img src="assets/viaje1.jpg" alt="">
+                        <span class="card-content"><strong>Charquini</strong><span>Explora los paisajes del altiplano.</span><span class="guide-link">Ver recorrido &rarr;</span></span>
+                    </button>
+                </article>
+                <article class="card guide-card">
+                    <button class="guide-choice" type="button" data-destination="tiwanaku" aria-label="Ver ruta a Tiwanaku">
+                        <img src="assets/viaje2.jpg" alt="">
+                        <span class="card-content"><strong>Tiwanaku</strong><span>Conoce la historia de la región.</span><span class="guide-link">Ver recorrido &rarr;</span></span>
+                    </button>
+                </article>
+                <article class="card"><img src="assets/bar1.jpg" alt="Bar del resort"><div class="card-content"><h3>Noche de coctelería</h3><p>Relájate y disfruta de una noche especial.</p><p class="guide-note">Ubicación del bar pendiente de confirmar.</p></div></article>
+            </div>
+        </main>
     </div>
+    <dialog class="route-dialog" id="routeDialog" aria-labelledby="routeTitle" aria-describedby="routeDescription">
+        <div class="route-header">
+            <div>
+                <p class="route-eyebrow">Desde la Plaza del Estudiante, La Paz</p>
+                <h2 id="routeTitle">Recorrido</h2>
+            </div>
+            <button type="button" class="route-close" id="routeClose" aria-label="Cerrar mapa">&times;</button>
+        </div>
+        <p id="routeDescription">Ruta estimada por carretera. El mapa mantiene el norte arriba; puedes desplazarlo y acercarlo.</p>
+        <div id="routeMap" class="route-map" aria-label="Mapa del recorrido"></div>
+        <p id="routeStatus" class="route-status" role="status" aria-live="polite"></p>
+        <p id="tileStatus" class="route-status" role="status"></p>
+    </dialog>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="js/main.js"></script>
+    <script src="js/guia.js"></script>
 </body>
 </html>

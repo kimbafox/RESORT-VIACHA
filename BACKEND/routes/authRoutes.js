@@ -64,10 +64,18 @@ router.post('/register', registerValidators, handleValidation, asyncHandler(asyn
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const result = await database.run(
-        'INSERT INTO users (email, password_hash, profile_image) VALUES (?, ?, ?)',
-        [email, hashedPassword, DEFAULT_PROFILE_IMAGE]
-    );
+    let result;
+    try {
+        result = await database.run(
+            'INSERT INTO users (email, password_hash, profile_image) VALUES (?, ?, ?)',
+            [email, hashedPassword, DEFAULT_PROFILE_IMAGE]
+        );
+    } catch (error) {
+        if (error.code === 'SQLITE_CONSTRAINT' && error.message.includes('users.email')) {
+            return res.status(400).json({ success: false, message: 'El usuario ya está registrado.' });
+        }
+        throw error;
+    }
     const newUser = formatUser(await database.get(`SELECT ${USER_COLUMNS} FROM users WHERE id = ?`, [result.id]));
 
     const token = jwt.sign({ id: newUser.id, email: newUser.email }, JWT_SECRET, { expiresIn: '2h' });

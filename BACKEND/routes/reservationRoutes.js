@@ -19,10 +19,12 @@ function parseDay(value) {
 
 const formatDay = (time) => new Date(time).toISOString().slice(0, 10);
 
-// Se tolera un día de diferencia por la zona horaria del servidor
 function earliestAllowedDay() {
-    const now = new Date();
-    return Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - DAY;
+    const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/La_Paz', year: 'numeric', month: '2-digit', day: '2-digit'
+    }).formatToParts(new Date());
+    const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+    return parseDay(`${values.year}-${values.month}-${values.day}`);
 }
 
 async function occupancyByDay(room) {
@@ -59,7 +61,7 @@ function formatReservation(row) {
 
 // Fechas sin disponibilidad para una habitación (público)
 router.get('/availability/:room', asyncHandler(async (req, res) => {
-    const room = ROOMS[req.params.room];
+    const room = Object.hasOwn(ROOMS, req.params.room) && ROOMS[req.params.room];
     if (!room) {
         return res.status(404).json({ success: false, message: 'Habitación no encontrada.' });
     }
@@ -79,7 +81,7 @@ router.get('/reservations', authMiddleware, asyncHandler(async (req, res) => {
 router.post('/reservations', authMiddleware, asyncHandler(async (req, res) => {
     const { room: roomKey, checkIn, checkOut, paymentMethod } = req.body;
     const guests = Number(req.body.guests);
-    const room = ROOMS[roomKey];
+    const room = Object.hasOwn(ROOMS, roomKey) && ROOMS[roomKey];
 
     if (!room) {
         return res.status(400).json({ success: false, message: 'Selecciona una habitación válida.' });
